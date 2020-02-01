@@ -1,7 +1,8 @@
 const _connectDb = async (mongodb, dbConfig) => {
+  const uri = `mongodb://${dbConfig.dbHost}/${dbConfig.dbPort}`;
   const { MongoClient } = mongodb;
-  console.info(`connecting to: ${dbConfig.connectionString}...`);
-  const client = await MongoClient.connect(dbConfig.connectionString, { useUnifiedTopology: true, useNewUrlParser: true });
+  console.info(`connecting to: ${uri}...`);
+  const client = await MongoClient.connect(uri, { useUnifiedTopology: true, useNewUrlParser: true });
   if (client) {
     console.info('database connected');
   }

@@ -1,19 +1,26 @@
 const express = require('express');
-const { http } = require('../../config');
+const mongodb = require('mongodb');
+const {
+  db: dbConfig,
+  http
+} = require('../../config');
+const { dbMiddleware } = require('../middlewares');
+const routes = require('../routes');
+const { errorHandler } = require('../utils');
 
 const app = express();
+const db = dbMiddleware(app, mongodb, dbConfig);
 
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-app.get('/', (req, res, next) => {
+//DB Initialization
+app.use(db);
 
-  res.send('hello word!');
-});
+//router initialization
+routes(app);
 
-app.post('/register', (req, res, next)=>{
-  const { body } = req;
-  db.users.insertOne({name: 'yayat'})
-});
+//error handler
+app.use(errorHandler);
 
-app.listen(http.httpPort, ()=>{
-  console.log(`express start on ${http.httpPort}`);
-})
+app.listen(http.httpPort, () => console.log(`app running at http://localhost:${http.httpPort}`));
